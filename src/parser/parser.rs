@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use crate::data_structures::Element;
+use crate::parser::string_parser::StringParser;
 
 pub const CHAR_SPACE: char = ' ';
 pub const CHAR_TAB: char = '\t';
@@ -23,11 +25,18 @@ impl Parser<'_> {
         }
     }
 
-    pub(crate) fn parse(&self) {
-
+    pub(crate) fn parse(&mut self) -> Element {
+        match self.chars[self.next()] {
+            CHAR_QUOTE => self.parse_string(),
+            _ => panic!("Unexpected character. JSON input is invalid.")
+        }
     }
 
-    fn get_to_next_element(&mut self) -> usize {
+    fn parse_string(&self) -> Element {
+        Element::String(StringParser::parse(self.chars, self.index))
+    }
+
+    fn next(&mut self) -> usize {
         while self.index < self.length && self.get_whitespaces().contains_key(&self.chars[self.index]) {
             self.index += 1;
         }
@@ -36,7 +45,7 @@ impl Parser<'_> {
     }
 
     fn get_whitespaces(&mut self) -> HashMap<char, ()> {
-        if (self.whitespaces.len() > 0) {
+        if self.whitespaces.len() > 0 {
             return self.whitespaces.clone()
         }
 
