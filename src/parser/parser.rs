@@ -32,8 +32,11 @@ impl Parser<'_> {
         }
     }
 
-    fn parse_string(&self) -> Element {
-        Element::String(StringParser::parse(self.chars, self.index))
+    fn parse_string(&mut self) -> Element {
+        let (element, index) = StringParser::parse(self.chars, self.index);
+        self.index = index;
+
+        Element::String(element)
     }
 
     fn next(&mut self) -> usize {

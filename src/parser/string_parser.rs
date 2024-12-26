@@ -7,7 +7,7 @@ pub struct StringParser {
 }
 
 impl StringParser {
-    pub(crate) fn parse(chars: &Vec<char>, index: usize) -> StringElement {
+    pub(crate) fn parse(chars: &Vec<char>, mut index: usize) -> (StringElement, usize) {
         let mut escaped: bool = false;
         let mut result: Vec<char> = Vec::new();
         let length: usize = chars[index+1..].len();
@@ -19,6 +19,8 @@ impl StringParser {
                 }
             }
 
+            index = i;
+
             if !escaped && char == CHAR_ESCAPE {
                 escaped = true;
                 continue;
@@ -26,7 +28,6 @@ impl StringParser {
 
             if char == CHAR_QUOTE {
                 if !escaped {
-
                     break;
                 }
             }
@@ -35,8 +36,11 @@ impl StringParser {
             result.push(char);
         }
 
-        StringElement {
-            value: result.iter().collect(),
-        }
+        (
+            StringElement {
+                value: result.iter().collect(),
+            },
+            index,
+        )
     }
 }
