@@ -9,7 +9,7 @@ fn read_file(filename: &str) -> Result<String, std::io::Error> {
 }
 
 fn main() {
-    let filename = "data/input/1.json";
+    let filename = "data/input/2.json";
     match read_file(filename) {
         Ok(content) => {
             let decoded = decode_json(content);
