@@ -1,8 +1,7 @@
 use crate::data_structures::string_element::StringElement;
 use crate::parser::parser::{CHAR_ESCAPE, CHAR_QUOTE};
 
-pub struct StringParser {
-}
+pub struct StringParser {}
 
 impl StringParser {
     pub(crate) fn parse(chars: &Vec<char>, mut index: usize) -> (StringElement, usize) {
@@ -11,7 +10,7 @@ impl StringParser {
         let length: usize = chars[index..].len();
 
         for (i, &char) in chars[index..].iter().enumerate() {
-            if i+1 == length {
+            if i + 1 == length {
                 if escaped || char != CHAR_QUOTE {
                     panic!("Invalid string value.");
                 }
@@ -24,10 +23,8 @@ impl StringParser {
                 continue;
             }
 
-            if char == CHAR_QUOTE {
-                if !escaped {
-                    break;
-                }
+            if char == CHAR_QUOTE && !escaped {
+                break;
             }
 
             escaped = false;

@@ -29,7 +29,7 @@ mod parser_tests {
         ($($name:ident: $input:expr), *) => {
             $(
                 #[test]
-                #[should_panic]
+                #[should_panic(expected = "Invalid string value.")]
                 fn $name() {
                     parse_string($input);
                 }
