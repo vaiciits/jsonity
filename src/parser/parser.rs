@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use crate::data_structures::Element;
 use crate::data_structures::object::Object;
 use crate::data_structures::string_element::StringElement;
+use crate::data_structures::Element;
 use crate::parser::object_parser::ObjectParser;
 use crate::parser::string_parser::StringParser;
+use std::collections::HashMap;
 
 pub const CHAR_SPACE: char = ' ';
 pub const CHAR_TAB: char = '\t';
@@ -36,7 +36,7 @@ impl Parser<'_> {
         match self.chars[self.next()] {
             CHAR_QUOTE => self.parse_string(),
             CHAR_PARENTHESIS_LEFT => self.parse_object(),
-            _ => panic!("Unexpected character. JSON input is invalid.")
+            _ => panic!("Unexpected character. JSON input is invalid."),
         }
     }
 
@@ -48,14 +48,17 @@ impl Parser<'_> {
     }
 
     fn parse_string(&mut self) -> Element {
-        let (element, index): (StringElement, usize) = StringParser::parse(self.chars, self.index + 1);
+        let (element, index): (StringElement, usize) =
+            StringParser::parse(self.chars, self.index + 1);
         self.index = index;
 
         Element::String(element)
     }
 
     fn next(&mut self) -> usize {
-        while self.index < self.length && self.get_whitespaces().contains_key(&self.chars[self.index]) {
+        while self.index < self.length
+            && self.get_whitespaces().contains_key(&self.chars[self.index])
+        {
             self.index += 1;
         }
 
