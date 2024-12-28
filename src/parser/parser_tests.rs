@@ -4,6 +4,10 @@ mod parser_tests {
     use crate::data_structures::Element::String;
     use crate::parser::parser::Parser;
 
+    fn parse_string(input: &str) -> Element {
+        Parser::new(&input.chars().collect()).parse()
+    }
+
     #[test]
     fn parse_with_strings() {
         let inputs: Vec<(&str, &str)> = vec![
@@ -21,19 +25,20 @@ mod parser_tests {
         }
     }
 
-    fn parse_string(input: &str) -> Element {
-        Parser::new(&input.chars().collect()).parse()
+    macro_rules! invalid_string_cases {
+        ($($name:ident: $input:expr), *) => {
+            $(
+                #[test]
+                #[should_panic]
+                fn $name() {
+                    parse_string($input);
+                }
+            )*
+        };
     }
 
-    #[test]
-    #[should_panic]
-    fn parse_with_invalid_string_with_escaped_quote_as_last() {
-        parse_string("\"foo\\\"");
-    }
-
-    #[test]
-    #[should_panic]
-    fn parse_with_invalid_string_with_unclosed_quote() {
-        parse_string("\"foo\\bar");
+    invalid_string_cases! {
+        parse_with_invalid_string_having_escaped_quote_as_last: "\"foo\\\"",
+        parse_with_invalid_string_having_unclosed_quotation: "\"foo\\bar"
     }
 }
