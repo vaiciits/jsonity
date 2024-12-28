@@ -4,6 +4,7 @@ use crate::parser::parser::Parser;
 mod parser;
 mod string_parser;
 mod object_parser;
+mod parser_tests;
 
 pub fn decode_json(input: String) -> String {
     let chars: Vec<char> = input.chars().collect();
