@@ -1,9 +1,9 @@
 use crate::data_structures::object::ObjectElement;
 use crate::data_structures::string_element::StringElement;
 use crate::data_structures::Element;
+use crate::data_structures::Element::Object;
 use crate::parser::string_parser::StringParser;
 use std::collections::HashMap;
-use crate::data_structures::Element::Object;
 
 pub const CHAR_SPACE: char = ' ';
 pub const CHAR_TAB: char = '\t';
@@ -14,6 +14,8 @@ pub const CHAR_ESCAPE: char = '\\';
 
 pub const CHAR_CURLY_LEFT: char = '{';
 pub const CHAR_CURLY_RIGHT: char = '}';
+pub const CHAR_COLON: char = ':';
+pub const CHAR_COMMA: char = ',';
 
 pub struct Parser<'a> {
     index: usize,
@@ -23,6 +25,14 @@ pub struct Parser<'a> {
 }
 
 impl Parser<'_> {
+    fn increase_by_one(&mut self) {
+        self.index += 1;
+
+        if self.index >= self.length {
+            panic!("Input too short.");
+        }
+    }
+
     pub fn new(chars: &Vec<char>) -> Parser {
         Parser {
             index: 0,
@@ -40,12 +50,31 @@ impl Parser<'_> {
         }
     }
 
-
     fn parse_object(&mut self) -> Element {
-        let object: ObjectElement = ObjectElement::new();
+        let mut object: ObjectElement = ObjectElement::new();
+
+        self.increase_by_one();
 
         while self.chars[self.next()] != CHAR_CURLY_RIGHT {
-            break;
+            let key: Element = self.parse_string();
+            self.increase_by_one();
+
+            if self.chars[self.next()] != CHAR_COLON {
+                let char_string: String = self.chars.iter().collect();
+                let error_message: String = format!(
+                    "Colon was expected at place: {}, {}",
+                    self.index, char_string
+                );
+                panic!("{}", error_message);
+            }
+
+            self.increase_by_one();
+            let value: Element = self.parse();
+            object.add_element("foo".to_string(), value);
+
+            if self.chars[self.next()] != CHAR_COMMA {
+                break;
+            }
         }
 
         Object(object)
@@ -54,7 +83,7 @@ impl Parser<'_> {
     fn parse_string(&mut self) -> Element {
         let (element, index): (StringElement, usize) =
             StringParser::parse(self.chars, self.index + 1);
-        self.index = index;
+        self.index += index + 1;
 
         Element::StringCase(element)
     }

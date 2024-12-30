@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod parser_tests {
-    use std::collections::HashMap;
-    use crate::data_structures::Element;
-    use crate::data_structures::Element::{StringCase, Object};
     use crate::data_structures::string_element::StringElement;
+    use crate::data_structures::Element;
+    use crate::data_structures::Element::{Object, StringCase};
     use crate::parser::parser::Parser;
+    use std::collections::HashMap;
 
     fn parse_string(input: &str) -> Element {
         Parser::new(&input.chars().collect()).parse()
@@ -45,29 +45,36 @@ mod parser_tests {
         parse_with_invalid_string_having_unclosed_quotation: "\"foo\\bar"
     }
 
-    macro_rules! test_parse_with_object {
-        ($($name:ident: $input:expr, $expected:expr),*) => {
-            $(
-                #[test]
-                fn $name() {
-                    let expected: HashMap<String, Element> = HashMap::from_iter($expected);
+    fn parse_object(input: &str, expected_vec: Vec<(String, Element)>) {
+        let expected: HashMap<String, Element> = HashMap::from_iter(expected_vec);
 
-                    match parse_string($input) {
-                        Object(object) => {
-                            let expected_keys: Vec<&String> = expected.keys().collect();
-                            let actual_keys: Vec<&String> = object.elements.keys().collect();
-                            assert_eq!(expected_keys, actual_keys);
-                            // TODO compare values - recursive
-                        },
-                        _ => assert!(false),
-                    }
-                }
-            )*
-        };
+        match parse_string(input) {
+            Object(object) => {
+                let expected_keys: Vec<&String> = expected.keys().collect();
+                let actual_keys: Vec<&String> = object.get_elements().keys().collect();
+                // let actual_keys: Vec<&String> = object.elements.keys().collect();
+                assert_eq!(expected_keys, actual_keys);
+                // TODO compare values - recursive
+            }
+            _ => assert!(false),
+        }
     }
 
-    test_parse_with_object! {
-        test_parse_empty: "{}", [],
-        test_parse_string: "{\"foo\":\"bar\"}", [("foo".to_string(), StringCase(StringElement { value: "bar".to_string() }))]
+    #[test]
+    fn test_parse_with_object_empty() {
+        parse_object("{}", vec![]);
+    }
+
+    #[test]
+    fn test_parse_with_object_with_single_property() {
+        parse_object(
+            "{\"foo\":\"bar\"}",
+            vec![(
+                "foo".to_string(),
+                StringCase(StringElement {
+                    value: "bar".to_string(),
+                }),
+            )],
+        );
     }
 }
