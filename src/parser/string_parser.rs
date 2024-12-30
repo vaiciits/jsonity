@@ -23,7 +23,7 @@ impl StringParser {
                 continue;
             }
 
-            if char == CHAR_QUOTE && !escaped {
+            if (char == CHAR_QUOTE) && !escaped {
                 break;
             }
 

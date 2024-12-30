@@ -1,4 +1,4 @@
-use crate::data_structures::object::Object;
+use crate::data_structures::object::ObjectElement;
 use crate::data_structures::string_element::StringElement;
 
 pub mod string_element;
@@ -9,6 +9,6 @@ pub trait ElementTrait {
 }
 
 pub enum Element {
-    String(StringElement),
-    Object(Object),
+    StringCase(StringElement),
+    Object(ObjectElement),
 }

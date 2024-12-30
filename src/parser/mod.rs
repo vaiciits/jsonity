@@ -3,7 +3,6 @@ use crate::parser::parser::Parser;
 
 mod parser;
 mod string_parser;
-mod object_parser;
 mod parser_tests;
 
 pub fn decode_json(input: String) -> String {
@@ -12,7 +11,7 @@ pub fn decode_json(input: String) -> String {
     let element: Element = parser.parse();
 
     match element {
-        Element::String(string_element) => string_element.decode(),
+        Element::StringCase(string_element) => string_element.decode(),
         Element::Object(object) => object.decode(),
     }
 }
