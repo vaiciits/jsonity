@@ -1,24 +1,33 @@
-use std::collections::HashMap;
 use crate::data_structures::{Element, ElementTrait};
 
 pub struct ObjectElement {
-    elements: HashMap<String, Element>,
+    elements: Vec<(String, Element)>,
 }
 impl ObjectElement {
     pub fn new() -> ObjectElement {
         ObjectElement {
-            elements: HashMap::new(),
+            elements: Vec::new(),
         }
     }
     pub(crate) fn add_element(&mut self, key: String, element: Element) {
-        if self.elements.contains_key(&key) {
+        if self.contains_key(&key) {
             panic!("Key {} already exists.", key);
         }
 
-        self.elements.insert(key, element);
+        self.elements.push((key, element));
     }
 
-    pub(crate) fn get_elements(&self) -> &HashMap<String, Element> {
+    fn contains_key(&self, key: &String) -> bool {
+        for (key_value, _element) in &self.elements {
+            if key_value == key {
+                return true;
+            }
+        }
+
+        false
+    }
+
+    pub(crate) fn get_elements(&self) -> &Vec<(String, Element)> {
         &self.elements
     }
 }

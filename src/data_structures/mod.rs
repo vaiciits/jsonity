@@ -14,8 +14,8 @@ pub enum Element {
 }
 impl Element {
     pub(crate) fn get_value_from_string_element(element: Element) -> String {
-        if let Element::StringCase(stringElement) = element {
-            stringElement.value
+        if let Element::StringCase(string_element) = element {
+            string_element.value
         } else {
             unreachable!();
         }

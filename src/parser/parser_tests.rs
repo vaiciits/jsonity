@@ -4,7 +4,6 @@ mod parser_tests {
     use crate::data_structures::Element;
     use crate::data_structures::Element::{Object, StringCase};
     use crate::parser::parser::Parser;
-    use std::collections::HashMap;
 
     fn parse_string(input: &str) -> Element {
         Parser::new(&input.chars().collect()).parse()
@@ -46,13 +45,10 @@ mod parser_tests {
     }
 
     fn parse_object(input: &str, expected_vec: Vec<(String, Element)>) {
-        let expected: HashMap<String, Element> = HashMap::from_iter(expected_vec);
-
         match parse_string(input) {
             Object(object) => {
-                let expected_keys: Vec<&String> = expected.keys().collect();
-                let actual_keys: Vec<&String> = object.get_elements().keys().collect();
-                // let actual_keys: Vec<&String> = object.elements.keys().collect();
+                let expected_keys: Vec<&String> = expected_vec.iter().map(|&(ref k, _)| k).collect();
+                let actual_keys: Vec<&String> = object.get_elements().iter().map(|&(ref k, _)| k).collect();
                 assert_eq!(expected_keys, actual_keys);
                 // TODO compare values - recursive
             }
