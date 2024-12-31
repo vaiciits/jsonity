@@ -75,7 +75,7 @@ mod parser_tests {
     }
 
     #[test]
-    fn test_parse_with_object_having_multiple_properties() {
+    fn test_parse_with_object_having_multiple_properties_not_in_order() {
         parse_object(
             "{   \"foo\" :   \"bar\" ,   \" baz \": \"foo\\\"baz\\\"bar\"   ,\"abc\":\"def\"}",
             vec![
@@ -113,5 +113,15 @@ mod parser_tests {
                 }),
             )],
         );
+    }
+
+    #[test]
+    fn test_parse_bool_true() {
+        parse_string("true");
+    }
+
+    #[test]
+    fn test_parse_bool_false() {
+        parse_string("false");
     }
 }

@@ -1,9 +1,10 @@
 use crate::data_structures::object::ObjectElement;
 use crate::data_structures::string_element::StringElement;
 use crate::data_structures::Element;
-use crate::data_structures::Element::Object;
+use crate::data_structures::Element::{Bool, Object, StringCase};
 use crate::parser::string_parser::StringParser;
 use std::collections::HashMap;
+use crate::data_structures::bool_element::BoolElement;
 
 pub const CHAR_SPACE: char = ' ';
 pub const CHAR_TAB: char = '\t';
@@ -16,6 +17,9 @@ pub const CHAR_CURLY_LEFT: char = '{';
 pub const CHAR_CURLY_RIGHT: char = '}';
 pub const CHAR_COLON: char = ':';
 pub const CHAR_COMMA: char = ',';
+
+pub const CHAR_F: char = 'f';
+pub const CHAR_T: char = 't';
 
 pub struct Parser<'a> {
     index: usize,
@@ -46,13 +50,36 @@ impl Parser<'_> {
         match self.chars[self.next()] {
             CHAR_QUOTE => self.parse_string(),
             CHAR_CURLY_LEFT => self.parse_object(),
+            CHAR_F | CHAR_T => self.parse_bool(),
             _ => panic!("Unexpected character. JSON input is invalid."),
         }
     }
 
+    fn parse_bool(&mut self) -> Element {
+        let target: bool = match self.chars[self.index] {
+            CHAR_F => false,
+            CHAR_T => true,
+            _ => panic!("Unexpected character for boolean value."),
+        };
+        let looking_for: String = target.to_string();
+        let length: usize = looking_for.len();
+
+        if self.index + length - 1 >= self.length {
+            panic!("Input too short for {}.", looking_for);
+        }
+
+        let value: String = self.chars[self.index..self.index + length].iter().collect();
+        if value != looking_for {
+            panic!("Unexpected character for boolean value.");
+        }
+
+        self.index += length;
+
+        Bool(BoolElement { value: target})
+    }
+
     fn parse_object(&mut self) -> Element {
         let mut object: ObjectElement = ObjectElement::new();
-
         self.increase_by_one();
 
         while self.chars[self.next()] != CHAR_CURLY_RIGHT {
@@ -89,7 +116,7 @@ impl Parser<'_> {
             StringParser::parse(self.chars, self.index + 1);
         self.index += index + 1;
 
-        Element::StringCase(element)
+        StringCase(element)
     }
 
     fn next(&mut self) -> usize {

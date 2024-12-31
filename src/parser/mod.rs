@@ -13,5 +13,6 @@ pub fn decode_json(input: String) -> String {
     match element {
         Element::StringCase(string_element) => string_element.decode(),
         Element::Object(object) => object.decode(),
+        Element::Bool(bool_element) => bool_element.decode(),
     }
 }
