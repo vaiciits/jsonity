@@ -12,3 +12,12 @@ pub enum Element {
     StringCase(StringElement),
     Object(ObjectElement),
 }
+impl Element {
+    pub(crate) fn get_value_from_string_element(element: Element) -> String {
+        if let Element::StringCase(stringElement) = element {
+            stringElement.value
+        } else {
+            unreachable!();
+        }
+    }
+}

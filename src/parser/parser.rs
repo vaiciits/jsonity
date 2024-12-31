@@ -56,7 +56,8 @@ impl Parser<'_> {
         self.increase_by_one();
 
         while self.chars[self.next()] != CHAR_CURLY_RIGHT {
-            let key: Element = self.parse_string();
+            let key_element: Element = self.parse_string();
+            let key: String = Element::get_value_from_string_element(key_element);
             self.increase_by_one();
 
             if self.chars[self.next()] != CHAR_COLON {
@@ -70,7 +71,7 @@ impl Parser<'_> {
 
             self.increase_by_one();
             let value: Element = self.parse();
-            object.add_element("foo".to_string(), value);
+            object.add_element(key, value);
 
             if self.chars[self.next()] != CHAR_COMMA {
                 break;
