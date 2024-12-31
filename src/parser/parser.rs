@@ -72,10 +72,13 @@ impl Parser<'_> {
             self.increase_by_one();
             let value: Element = self.parse();
             object.add_element(key, value);
+            self.increase_by_one();
 
             if self.chars[self.next()] != CHAR_COMMA {
                 break;
             }
+
+            self.increase_by_one();
         }
 
         Object(object)

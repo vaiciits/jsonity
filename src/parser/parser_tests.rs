@@ -66,9 +66,50 @@ mod parser_tests {
     }
 
     #[test]
-    fn test_parse_with_object_with_single_property() {
+    fn test_parse_with_object_having_single_property() {
         parse_object(
             "{\"foo\":\"bar\"}",
+            vec![(
+                "foo".to_string(),
+                StringCase(StringElement {
+                    value: "bar".to_string(),
+                }),
+            )],
+        );
+    }
+
+    #[test]
+    fn test_parse_with_object_having_multiple_properties() {
+        parse_object(
+            "{   \"foo\" :   \"bar\" ,   \" baz \": \"foo\\\"baz\\\"bar\"   ,\"abc\":\"def\"}",
+            vec![
+                (
+                    "foo".to_string(),
+                    StringCase(StringElement {
+                        value: "bar".to_string(),
+                    }),
+                ),
+                (
+                    " baz ".to_string(),
+                    StringCase(StringElement {
+                        value: "foo\"baz\"bar".to_string(),
+                    }),
+                ),
+                (
+                    "abc".to_string(),
+                    StringCase(StringElement {
+                        value: "def".to_string(),
+                    }),
+                ),
+            ],
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "Key foo already exists.")]
+    fn test_parse_with_object_having_repeating_properties() {
+        parse_object(
+            "{\"foo\":\"bar\",\"foo\":\"baz\"}",
             vec![(
                 "foo".to_string(),
                 StringCase(StringElement {

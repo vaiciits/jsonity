@@ -11,6 +11,10 @@ impl ObjectElement {
         }
     }
     pub(crate) fn add_element(&mut self, key: String, element: Element) {
+        if self.elements.contains_key(&key) {
+            panic!("Key {} already exists.", key);
+        }
+
         self.elements.insert(key, element);
     }
 
