@@ -124,4 +124,16 @@ mod parser_tests {
     fn test_parse_bool_false() {
         parse_string("false");
     }
+
+    #[test]
+    #[should_panic(expected = "Unexpected character for boolean value.")]
+    fn test_parse_bool_incorrect_value() {
+        parse_string("faire");
+    }
+
+    #[test]
+    #[should_panic(expected = "Input too short for true")]
+    fn test_parse_bool_too_short() {
+        parse_string("tr");
+    }
 }
