@@ -115,14 +115,24 @@ mod parser_tests {
         );
     }
 
+    fn compare_bool(input: &str, expected: bool) {
+        let element: Element = parse_string(input);
+
+        if let Element::Bool(ref bool_element) = element {
+            assert_eq!(expected, bool_element.value);
+        } else {
+            assert!(false);
+        }
+    }
+
     #[test]
     fn test_parse_bool_true() {
-        parse_string("true");
+        compare_bool("true", true);
     }
 
     #[test]
     fn test_parse_bool_false() {
-        parse_string("false");
+        compare_bool("false", false);
     }
 
     #[test]
